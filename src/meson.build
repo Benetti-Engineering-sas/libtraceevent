@@ -17,6 +17,18 @@ sources= [
 cc = meson.get_compiler('c')
 dl_dep = cc.find_library('dl')
 
+btf_enum64_test_code = '''
+#include <linux/btf.h>
+int main(void) {
+    int x = BTF_KIND_ENUM64;
+    return 0;
+}
+'''
+
+if cc.compiles(btf_enum64_test_code, name : 'BTF_KIND_ENUM64 check')
+    add_project_arguments('-DNO_BTF', language : 'c')
+endif
+
 libtraceevent = library(
     'traceevent',
     sources,

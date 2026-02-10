@@ -481,6 +481,9 @@ static int init_btf_func(struct tep_btf *btf, struct trace_seq *s,
  */
 int tep_btf_list_args(struct tep_handle *tep, struct trace_seq *s, const char *func)
 {
+#ifdef NO_BTF
+	return -1;
+#else
 	struct tep_btf *btf = tep->btf;
 	struct btf_type *type = tep_btf_find_func(btf, func);
 	struct btf_param *param;
@@ -530,6 +533,7 @@ int tep_btf_list_args(struct tep_handle *tep, struct trace_seq *s, const char *f
 			trace_seq_printf(s, "%s", param_name);
 	}
 	return p;
+#endif
 }
 
 /**
@@ -553,6 +557,10 @@ int tep_btf_list_args(struct tep_handle *tep, struct trace_seq *s, const char *f
 int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
 		       int nmem, int size, const char *func)
 {
+#ifdef NO_BTF
+	tep_warning("BTF not supported. Args: ??? \n");
+	return -1;
+#else
 	struct tep_btf *btf = tep->btf;
 	struct btf_type *type = tep_btf_find_func(btf, func);
 	struct btf_param *param;
@@ -664,4 +672,5 @@ int tep_btf_print_args(struct tep_handle *tep, struct trace_seq *s, void *args,
 		}
 	}
 	return 0;
+#endif
 }
